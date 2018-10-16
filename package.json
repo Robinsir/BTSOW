@@ -20,7 +20,7 @@
   },
   "build": {
     "productName": "neteasedownloader",
-    "appId": "com.example.yourapp",
+    "appId": "com.robin.neteasedownloader",
     "directories": {
       "output": "build"
     },
