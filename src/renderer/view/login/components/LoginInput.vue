@@ -34,7 +34,8 @@
 
 </template>
 <script>
-const {ipcRenderer} = require('electron')
+import {ipcRenderer} from 'electron'
+import {LOGIN_WITH_PHONE} from '@/../message.js'
 export default {
   data () {
     return {
@@ -53,20 +54,23 @@ export default {
       }
     }
   },
+  mounted () {
+
+  },
   methods: {
     handleLogin (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log('验证成功')
+          // TODO:区分手机和邮箱
+          this.getLoginInfo(this.ruleForm)
         }
       })
     },
     getLoginInfo (ruleForm) {
       // ruleForm.usrName
-      let sendTitle = 'loginWithPhone'
-      ipcRenderer.send(sendTitle, JSON.stringify(ruleForm))
-      ipcRenderer.on(sendTitle, (event, arg) => {
-
+      ipcRenderer.send(LOGIN_WITH_PHONE, ruleForm)
+      ipcRenderer.on(LOGIN_WITH_PHONE, (event, arg) => {
+        console.log(event, arg)
       })
     }
 

@@ -1,4 +1,6 @@
-import * as Login from './login'
+import * as Login from './login.js'
+// export Login = Login;
 export default {
-  Login
+  Login,
+  test: 'test'
 }

@@ -1,14 +1,14 @@
 import require from './require'
 
-export function loginWithPhone (params) {
-  require({
-    url: '',
-    method: 'put',
+export function withPhone (params) {
+  return require({
+    url: '/login/cellphone',
+    method: 'get',
     params
   })
 }
 
-export function loginWithEmail (params) {
+export function withEmail (params) {
   require({
     url: '',
     method: 'put',
