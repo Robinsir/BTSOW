@@ -9,10 +9,14 @@ export default () => {
     console.log(passWord)
 
     api.Login.withPhone({'phone': usrName, 'password': passWord}).then((resp) => {
-      if (resp.code === 200) {
+      console.log(resp)
+      if (resp.status === 200) {
         console.log(resp)
-        event.sender.send(LOGIN_WITH_PHONE, 'scuess!')
+        event.sender.send(LOGIN_WITH_PHONE, 'success!')
       }
+    }, (error) => {
+      event.sender.send(LOGIN_WITH_PHONE, 'error!' + JSON.stringify(error.response.data))
+      console.log(error.response.data)
     })
   })
 }

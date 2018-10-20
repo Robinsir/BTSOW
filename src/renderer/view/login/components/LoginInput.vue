@@ -21,8 +21,11 @@
 
         <!-- 复选框 -->
         <div class="selector">
-            <el-checkbox class="checkbox" label="记住帐号密码"></el-checkbox>
-            <el-checkbox class="checkbox" label="记住不登录使用"></el-checkbox>
+            <el-checkbox class="checkbox" label="记住帐号密码" @change="saveInLocalStorage('account')" v-model="isRememberAccount">
+            </el-checkbox>
+
+            <el-checkbox class="checkbox" label="记住不登录使用" @change="saveInLocalStorage('unlogin')" v-model="isWithoutLogin">
+            </el-checkbox>
         </div>
 
         <!-- 登录按钮 -->
@@ -51,11 +54,17 @@ export default {
         passWord: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, message: '密码长度不正确', trigger: 'blur' }]
-      }
+      },
+      isRememberAccount: false,
+      isWithoutLogin: false
     }
   },
   mounted () {
-
+    this.isRememberAccount = localStorage.isRememberAccount === 'true'
+    this.isWithoutLogin = localStorage.isWithoutLogin === 'true'
+    this.ruleForm.usrName = localStorage.usrName
+    this.ruleForm.passWord = localStorage.passWord
+    this.setIpcRenderer()
   },
   methods: {
     handleLogin (formName) {
@@ -69,9 +78,32 @@ export default {
     getLoginInfo (ruleForm) {
       // ruleForm.usrName
       ipcRenderer.send(LOGIN_WITH_PHONE, ruleForm)
+    },
+    setIpcRenderer () {
       ipcRenderer.on(LOGIN_WITH_PHONE, (event, arg) => {
+        if (arg.startsWith('error')) {
+          this.$notify.error({
+            title: '错误',
+            message: arg,
+            offset: 20,
+            duration: 2000
+          })
+        } else if (arg.startsWith('success')) {
+          this.$message.success('登录成功！')
+        }
         console.log(event, arg)
       })
+    },
+    saveInLocalStorage (selector) {
+      if (selector === 'account') {
+        console.log(this.ruleForm.usrName)
+        console.log(this.ruleForm.passWord)
+        localStorage.isRememberAccount = this.isRememberAccount
+        localStorage.usrName = this.ruleForm.usrName
+        localStorage.passWord = this.ruleForm.passWord
+      } else if (selector === 'unlogin') {
+        localStorage.isWithoutLogin = this.isWithoutLogin
+      }
     }
 
   },

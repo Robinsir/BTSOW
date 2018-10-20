@@ -25,7 +25,7 @@ server.interceptors.response.use(function (response) {
 }, function (error) {
   // 对响应错误做点什么
   console.log('请求出错！')
-  // console.log(error)
+  console.log(error.response.data)
   return Promise.reject(error)
 })
 export default server
