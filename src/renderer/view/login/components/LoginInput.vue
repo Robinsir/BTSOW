@@ -30,7 +30,7 @@
 
         <!-- 登录按钮 -->
         <el-button class="input-span login-button" type="primary" @click="handleLogin('ruleForm')">登录</el-button>
-        <el-button class="input-span login-button">不登录使用</el-button>
+        <el-button class="input-span login-button" @click="handleUnlogin">不登录使用</el-button>
 
     </el-card>
 </div>
@@ -75,6 +75,9 @@ export default {
         }
       })
     },
+    handleUnlogin () {
+      this.$router.push('musiclist')
+    },
     getLoginInfo (ruleForm) {
       // ruleForm.usrName
       ipcRenderer.send(LOGIN_WITH_PHONE, ruleForm)
@@ -96,8 +99,6 @@ export default {
     },
     saveInLocalStorage (selector) {
       if (selector === 'account') {
-        console.log(this.ruleForm.usrName)
-        console.log(this.ruleForm.passWord)
         localStorage.isRememberAccount = this.isRememberAccount
         localStorage.usrName = this.ruleForm.usrName
         localStorage.passWord = this.ruleForm.passWord

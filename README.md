@@ -1,8 +1,18 @@
-# neteasedownloader
+# BTSOW资源
+### 一、设计功能实现
+1. BTSOW搜索功能，列表（防止广告，提高下载效率）
+2. 爬取电影榜单，自动检索并，批量生成磁链
+3. 存储用户选定磁链，批量下载
+4. 与百度云绑定，离线下载到百度云，通过群晖同步到本地NAS
+5. 设置导入下载列表，下载过滤器，状态监控
 
-> An electron-vue project
+### 二、项目进度
+- BTSOW 搜索功能  - building...
+---
+### 三、开发
+> 技术路线：Electron + Vue + Element + Nodejs
 
-#### Build Setup
+#### 构建方法
 
 ``` bash
 # install dependencies
@@ -21,5 +31,3 @@ npm run lint
 ```
 
 ---
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[cf53551](https://github.com/SimulatedGREG/electron-vue/tree/cf53551a209b49220525e7de80f1c541d7096aef) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).

@@ -1,1 +1,1 @@
-export const LOGIN_WITH_PHONE = 'LOGIN_WITH_PHONE'
+export const GET_SEARCH = 'GET_SEARCH'

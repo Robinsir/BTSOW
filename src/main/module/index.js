@@ -1,4 +1,4 @@
-import Login from './login'
+import SearchOne from './SearchOne'
 export default () => {
-  Login()
+  SearchOne()
 }
