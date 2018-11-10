@@ -10,10 +10,18 @@
       </el-form>
       
       <!-- table show info -->
-      <el-table :data="searchData.lists" style="width: 100%" v-loading="tableLoading">
+      <el-table :data="searchData.lists" style="width: 100%" v-loading="tableLoading"
+       @expand-change="handleExpandChange"
+       @row-contextmenu="handleContextMenu">
           <el-table-column
             type="index"
             :index="indexMethod">
+          </el-table-column>
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <SearchDetail :data="searchDetail">
+              </SearchDetail>
+            </template>
           </el-table-column>
           <el-table-column
             label="日期"
@@ -37,14 +45,18 @@
     </div>
 </template> 
 <script>
-import { ipcRenderer } from 'electron'
-import { GET_SEARCH_LIST } from '@/../message'
+import { ipcRenderer, clipboard } from 'electron'
+import { GET_SEARCH_LIST, GET_SEARCH_DETAIL } from '@/../message'
+import SearchDetail from './components/SearchDetail'
 export default {
   data () {
     return {
       searchContent: '',
       tableLoading: false,
-      searchData: []
+      expandedRowsNum: 0,
+      isCopy: false,
+      searchData: {},
+      searchDetail: {}
     }
   },
   mounted () {
@@ -59,13 +71,40 @@ export default {
       this.tableLoading = true
     },
     bindMessage () {
+      // listen GET_SEARCH_LIST
       ipcRenderer.on(GET_SEARCH_LIST, (event, args) => {
         let data = args
         this.searchData = data
         this.tableLoading = false
         console.log(data)
       })
+
+      // listen GET_SEARCH_DETAIL
+      ipcRenderer.on(GET_SEARCH_DETAIL, (event, args) => {
+        this.searchDetail = args
+        // copy link when right click item
+        if (this.isCopy === true) {
+          clipboard.writeText(args.magnet_link)
+          this.$message.success('已复制到剪贴板')
+          this.isCopy = false
+        }
+        console.log(args)
+      })
+    },
+    handleExpandChange (row, expandedRows) {
+      if (expandedRows.length > this.expandedRowsNum) {
+        ipcRenderer.send(GET_SEARCH_DETAIL, row.link)
+      }
+      this.expandedRowsNum = expandedRows.length
+    },
+    handleContextMenu (row) {
+      this.isCopy = true
+      ipcRenderer.send(GET_SEARCH_DETAIL, row.link)
+      this.$message('正在查询链接。。。')
     }
+  },
+  components: {
+    SearchDetail
   }
 }
 </script>

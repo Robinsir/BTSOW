@@ -1,1 +1,2 @@
 export const GET_SEARCH_LIST = 'GET_SEARCH_LIST'
+export const GET_SEARCH_DETAIL = 'GET_SEARCH_DETAIL'
