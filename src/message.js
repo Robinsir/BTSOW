@@ -1,1 +1,1 @@
-export const GET_SEARCH = 'GET_SEARCH'
+export const GET_SEARCH_LIST = 'GET_SEARCH_LIST'

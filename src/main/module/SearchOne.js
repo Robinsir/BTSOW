@@ -5,24 +5,23 @@ import {
   addQueue
 } from './Crawler'
 import {
-  GET_SEARCH
+  GET_SEARCH_LIST
 } from '@/message'
 import jq from 'cheerio'
 const baseUrl = 'https://btso.pw/search/'
 export default () => {
-  ipcMain.on(GET_SEARCH, (event, agrs) => {
-    addQueue(baseUrl + agrs, ($) => {
+  ipcMain.on(GET_SEARCH_LIST, (event, agrs) => {
+    addQueue(encodeURI(baseUrl + agrs), ($) => {
       console.log($('title').text())
-      let data = getTableList($)
+      let data = getSearchList($)
       console.log('TCL: data', data)
-      // data.head
+      event.sender.send(GET_SEARCH_LIST, data)
     })
   })
 }
-function getTableList ($) {
+function getSearchList ($) {
   let data = {}
   let dataList = $('.data-list').children()
-  // let $dataList = $('.row')
 
   // get head
   data.head = []
@@ -35,11 +34,8 @@ function getTableList ($) {
   data.lists = []
   // del head
   items = dataList
-  delete items[0]
-  console.log('TCL: getTableList -> items', items)
-  for (let i = 0; i < items.length; i++) {
+  for (let i = 1; i < items.length; i++) {
     let item = jq(items[i])
-    // console.log('TCL: getTableList -> item', item)
     let obj = {}
     let a = jq(item.find('a'))
     obj.name = a.attr('title')
