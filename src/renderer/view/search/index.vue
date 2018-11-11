@@ -4,7 +4,7 @@
       <!-- selector -->
       <el-form :inline="true">
         <el-form-item label="搜索BTSOW">
-          <el-input v-model="searchContent" type="text"></el-input>
+          <el-autocomplete v-model="searchContent" type="text"  :fetch-suggestions="querySearch" @select="handleSelect" placeholder="请输入内容"></el-autocomplete>
         </el-form-item>
         <el-button @click="getSearchOne" type="primary">搜索</el-button>
       </el-form>
@@ -55,20 +55,48 @@ export default {
       tableLoading: false,
       expandedRowsNum: 0,
       isCopy: false,
+      historyList: [],
       searchData: {},
       searchDetail: {}
     }
   },
   mounted () {
+    // read historyList
+    let historyList = localStorage.getItem('HISTORY_LIST')
+    if (historyList) this.historyList = JSON.parse(historyList)
+
     this.bindMessage()
   },
   methods: {
+    querySearch (queryString, cb) {
+      let historyList = this.historyList
+      let results = queryString ? historyList.filter(this.createFilter(queryString)) : historyList
+      cb(results)
+    },
+    createFilter (queryString) {
+      return (history) => {
+        return (history.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
+      }
+    },
+    handleSelect (item) {
+      this.searchContent = item.value
+      this.getSearchOne()
+    },
     indexMethod (index) {
       return index + 1
     },
     getSearchOne () {
       ipcRenderer.send(GET_SEARCH_LIST, this.searchContent)
       this.tableLoading = true
+      // save search result
+      let historyList = localStorage.getItem('HISTORY_LIST')
+      if (historyList) this.historyList = JSON.parse(historyList)
+
+      // if item in history don't save
+      for (let item of this.historyList) { if (item.value === this.searchContent) return }
+
+      this.historyList.push({'value': this.searchContent})
+      localStorage.setItem('HISTORY_LIST', JSON.stringify(this.historyList))
     },
     bindMessage () {
       // listen GET_SEARCH_LIST
