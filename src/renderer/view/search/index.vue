@@ -2,27 +2,24 @@
     <div class="search-index">
 
       <!-- selector -->
-      <el-form :inline="true">
-        <el-form-item label="搜索BTSOW">
+      <div class="search-head">
           <template v-if="isSaveHistory">
-          <el-autocomplete  v-model="searchContent" type="text"  :fetch-suggestions="querySearch" @select="handleSelect" placeholder="请输入内容">
+          <el-autocomplete  v-model="searchContent" type="text"  :fetch-suggestions="querySearch" @select="handleSelect" placeholder="请输入内容" style="search">
             <template slot="append">
               <el-button @click="getSearchOne" type="primary">搜索</el-button>
             </template>
           </el-autocomplete>
           </template>
           <template v-else>
-            <el-input  v-model="searchContent" type="text" placeholder="请输入内容">
+            <el-input  v-model="searchContent" type="text" placeholder="请输入内容" style="search">
               <template slot="append">
                 <el-button @click="getSearchOne" type="primary">搜索</el-button>
               </template>
             </el-input>             
           </template>
-        </el-form-item>
-        <el-button type="primary" @click="handleSetting"><i class="el-icon-setting"></i></el-button>
-        
-      </el-form>
-      
+        <el-button type="primary" @click="handleSetting" class="set-icon setting"><i class="el-icon-setting"></i></el-button>
+      </div>
+
       <!-- table show info -->
       <el-table :data="searchData.lists" style="width: 100%" v-loading="tableLoading"
        @expand-change="handleExpandChange"
@@ -54,7 +51,6 @@
             align = 'center'
             prop="name">
           </el-table-column>
-
       </el-table>
 
       <search-setting :show-setting.sync = "historySetting" @save-change="handleSaveChange"></search-setting>
@@ -161,8 +157,21 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.search-index .el-button{
+.set-icon{
     font-size: 18px;
     padding: 9px 15px;
+}
+.search-index{
+  position: relative;
+}
+.search-head{
+  position: relative;
+  margin: 20px auto;
+  width: 600px;
+  .setting{
+    position: absolute;
+    top: 0px;
+    left: 650px;
+  }
 }
 </style>
