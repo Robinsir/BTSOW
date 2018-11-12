@@ -1,12 +1,26 @@
 <template>
-    <div>
+    <div class="search-index">
 
       <!-- selector -->
       <el-form :inline="true">
         <el-form-item label="搜索BTSOW">
-          <el-autocomplete v-model="searchContent" type="text"  :fetch-suggestions="querySearch" @select="handleSelect" placeholder="请输入内容"></el-autocomplete>
+          <template v-if="isSaveHistory">
+          <el-autocomplete  v-model="searchContent" type="text"  :fetch-suggestions="querySearch" @select="handleSelect" placeholder="请输入内容">
+            <template slot="append">
+              <el-button @click="getSearchOne" type="primary">搜索</el-button>
+            </template>
+          </el-autocomplete>
+          </template>
+          <template v-else>
+            <el-input  v-model="searchContent" type="text" placeholder="请输入内容">
+              <template slot="append">
+                <el-button @click="getSearchOne" type="primary">搜索</el-button>
+              </template>
+            </el-input>             
+          </template>
         </el-form-item>
-        <el-button @click="getSearchOne" type="primary">搜索</el-button>
+        <el-button type="primary" @click="handleSetting"><i class="el-icon-setting"></i></el-button>
+        
       </el-form>
       
       <!-- table show info -->
@@ -42,12 +56,16 @@
           </el-table-column>
 
       </el-table>
+
+      <search-setting :show-setting.sync = "historySetting" @save-change="handleSaveChange"></search-setting>
     </div>
 </template> 
 <script>
 import { ipcRenderer, clipboard } from 'electron'
 import { GET_SEARCH_LIST, GET_SEARCH_DETAIL } from '@/../message'
 import SearchDetail from './components/SearchDetail'
+import SearchSetting from './components/SearchSetting'
+import Cookie from 'js-cookie'
 export default {
   data () {
     return {
@@ -55,6 +73,8 @@ export default {
       tableLoading: false,
       expandedRowsNum: 0,
       isCopy: false,
+      isSaveHistory: localStorage.getItem('HISTORY_SAVE') === 'true',
+      historySetting: false,
       historyList: [],
       searchData: {},
       searchDetail: {}
@@ -62,7 +82,7 @@ export default {
   },
   mounted () {
     // read historyList
-    let historyList = localStorage.getItem('HISTORY_LIST')
+    let historyList = Cookie.get('HISTORY_LIST')
     if (historyList) this.historyList = JSON.parse(historyList)
 
     this.bindMessage()
@@ -82,6 +102,12 @@ export default {
       this.searchContent = item.value
       this.getSearchOne()
     },
+    handleSetting () {
+      this.historySetting = true
+    },
+    handleSaveChange () {
+      this.isSaveHistory = localStorage.getItem('HISTORY_SAVE') === 'true'
+    },
     indexMethod (index) {
       return index + 1
     },
@@ -89,14 +115,14 @@ export default {
       ipcRenderer.send(GET_SEARCH_LIST, this.searchContent)
       this.tableLoading = true
       // save search result
-      let historyList = localStorage.getItem('HISTORY_LIST')
+      let historyList = Cookie.get('HISTORY_LIST')
       if (historyList) this.historyList = JSON.parse(historyList)
 
       // if item in history don't save
       for (let item of this.historyList) { if (item.value === this.searchContent) return }
 
       this.historyList.push({'value': this.searchContent})
-      localStorage.setItem('HISTORY_LIST', JSON.stringify(this.historyList))
+      Cookie.set('HISTORY_LIST', JSON.stringify(this.historyList), {expires: 7})
     },
     bindMessage () {
       // listen GET_SEARCH_LIST
@@ -104,7 +130,6 @@ export default {
         let data = args
         this.searchData = data
         this.tableLoading = false
-        console.log(data)
       })
 
       // listen GET_SEARCH_DETAIL
@@ -116,7 +141,6 @@ export default {
           this.$message.success('已复制到剪贴板')
           this.isCopy = false
         }
-        console.log(args)
       })
     },
     handleExpandChange (row, expandedRows) {
@@ -132,7 +156,13 @@ export default {
     }
   },
   components: {
-    SearchDetail
+    SearchDetail, SearchSetting
   }
 }
 </script>
+<style lang="scss" scoped>
+.search-index .el-button{
+    font-size: 18px;
+    padding: 9px 15px;
+}
+</style>
