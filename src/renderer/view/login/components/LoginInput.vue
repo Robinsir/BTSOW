@@ -4,7 +4,7 @@
 
         <!-- 头部 -->
         <template slot="header" class="clearfix test">
-            <span>登录</span>
+            <span>登录百度云</span>
          </template>
 
         <!-- 内容输入 -->
@@ -24,13 +24,13 @@
             <el-checkbox class="checkbox" label="记住帐号密码" @change="saveInLocalStorage('account')" v-model="isRememberAccount">
             </el-checkbox>
 
-            <el-checkbox class="checkbox" label="记住不登录使用" @change="saveInLocalStorage('unlogin')" v-model="isWithoutLogin">
+            <!-- <el-checkbox class="checkbox" label="记住不登录使用" @change="saveInLocalStorage('unlogin')" v-model="isWithoutLogin"> -->
             </el-checkbox>
         </div>
 
         <!-- 登录按钮 -->
         <el-button class="input-span login-button" type="primary" @click="handleLogin('ruleForm')">登录</el-button>
-        <el-button class="input-span login-button" @click="handleUnlogin">不登录使用</el-button>
+        <!-- <el-button class="input-span login-button" @click="handleUnlogin">不登录使用</el-button> -->
 
     </el-card>
 </div>
@@ -38,7 +38,7 @@
 </template>
 <script>
 import {ipcRenderer} from 'electron'
-import {LOGIN_WITH_PHONE} from '@/../message.js'
+import {LOGIN_BAIDUYUN} from '@/../message.js'
 export default {
   data () {
     return {
@@ -49,7 +49,7 @@ export default {
       rules: {
         usrName: [
           { required: true, message: '请输入信息', trigger: 'blur' },
-          { pattern: /(^1[0-9]{10}$)|(^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$)/, message: '请输入手机号或E-mail', trigger: 'blur' }
+          { pattern: /(^1[0-9]{10}$)|(^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$)/, message: '请输入用户名，一定是用户名', trigger: 'blur' }
         ],
         passWord: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -61,7 +61,7 @@ export default {
   },
   mounted () {
     this.isRememberAccount = localStorage.isRememberAccount === 'true'
-    this.isWithoutLogin = localStorage.isWithoutLogin === 'true'
+    // this.isWithoutLogin = localStorage.isWithoutLogin === 'true'
     this.ruleForm.usrName = localStorage.usrName
     this.ruleForm.passWord = localStorage.passWord
     this.setIpcRenderer()
@@ -70,30 +70,25 @@ export default {
     handleLogin (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // TODO:区分手机和邮箱
-          this.getLoginInfo(this.ruleForm)
+          this.getLoginInfo()
         }
       })
     },
-    handleUnlogin () {
-      this.$router.push('musiclist')
-    },
-    getLoginInfo (ruleForm) {
-      // ruleForm.usrName
-      ipcRenderer.send(LOGIN_WITH_PHONE, ruleForm)
+    getLoginInfo () {
+      ipcRenderer.send(LOGIN_BAIDUYUN, this.ruleForm)
     },
     setIpcRenderer () {
-      ipcRenderer.on(LOGIN_WITH_PHONE, (event, arg) => {
-        if (arg.startsWith('error')) {
-          this.$notify.error({
-            title: '错误',
-            message: arg,
-            offset: 20,
-            duration: 2000
-          })
-        } else if (arg.startsWith('success')) {
-          this.$message.success('登录成功！')
-        }
+      ipcRenderer.on(LOGIN_BAIDUYUN, (event, arg) => {
+        // if (arg.startsWith('error')) {
+        //   this.$notify.error({
+        //     title: '错误',
+        //     message: arg,
+        //     offset: 20,
+        //     duration: 2000
+        //   })
+        // } else if (arg.startsWith('success')) {
+        //   this.$message.success('登录成功！')
+        // }
         console.log(event, arg)
       })
     },

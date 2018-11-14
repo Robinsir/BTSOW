@@ -10,6 +10,11 @@ export default new Router({
     component: require('@/view/search/index').default
   },
   {
+    path: '/login',
+    name: 'login',
+    component: require('@/view/login/index').default
+  },
+  {
     path: '*',
     redirect: '/'
   }

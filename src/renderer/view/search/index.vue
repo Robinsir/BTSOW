@@ -18,6 +18,7 @@
             </el-input>             
           </template>
         <el-button type="primary" @click="handleSetting" class="set-icon setting"><i class="el-icon-setting"></i></el-button>
+        <el-button type="primary" @click="handleBaiduYun">百度云</el-button>
       </div>
 
       <!-- table show info -->
@@ -93,6 +94,9 @@ export default {
       return (history) => {
         return (history.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
       }
+    },
+    handleBaiduYun () {
+      this.$router.push('login')
     },
     handleSelect (item) {
       this.searchContent = item.value
