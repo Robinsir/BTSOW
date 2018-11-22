@@ -18,7 +18,7 @@
             </el-input>             
           </template>
         <el-button type="primary" @click="handleSetting" class="set-icon setting"><i class="el-icon-setting"></i></el-button>
-        <el-button type="primary" @click="handleBaiduYun">百度云</el-button>
+        <el-button type="primary" @click="handleBaiduYun" class="bdy-login">百度云</el-button>
       </div>
 
       <!-- table show info -->
@@ -176,6 +176,11 @@ export default {
     position: absolute;
     top: 0px;
     left: 650px;
+  }
+  .bdy-login{
+    position: absolute;
+    top: 0px;
+    left: -120px;   
   }
 }
 </style>

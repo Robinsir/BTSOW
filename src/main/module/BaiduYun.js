@@ -10,8 +10,7 @@ export default () => {
     let pcs = new PCS['default'](PCS.create_username_password_jar_creator(usrName, passWord,
       url => {
         event.sender.send(LOGIN_BAIDUYUN, url)
-            
-        }))
+      }))
     pcs.init
       .then(() => pcs.quota()).then(console.log)
       .then(() => pcs.list_files('/')).then(console.log)
