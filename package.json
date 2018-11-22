@@ -19,8 +19,8 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "neteasedownloader",
-    "appId": "com.robin.neteasedownloader",
+    "productName": "BTSOW",
+    "appId": "com.robin.btsow",
     "directories": {
       "output": "build"
     },

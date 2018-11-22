@@ -30,7 +30,7 @@
 
         <!-- 登录按钮 -->
         <el-button class="input-span login-button" type="primary" @click="handleLogin('ruleForm')">登录</el-button>
-        <!-- <el-button class="input-span login-button" @click="handleUnlogin">不登录使用</el-button> -->
+        <el-button class="input-span login-button" @click="handleUnlogin">不登录使用</el-button>
 
     </el-card>
 </div>
@@ -100,8 +100,10 @@ export default {
       } else if (selector === 'unlogin') {
         localStorage.isWithoutLogin = this.isWithoutLogin
       }
+    },
+    handleUnlogin () {
+      this.$router.push('./')
     }
-
   },
   name: 'LoginInput'
 }
