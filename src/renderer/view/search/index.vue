@@ -4,7 +4,7 @@
       <!-- selector -->
       <div class="search-head">
           <template v-if="isSaveHistory">
-          <el-autocomplete  v-model="searchContent" type="text"  :fetch-suggestions="querySearch" @select="handleSelect" placeholder="请输入内容" style="search">
+          <el-autocomplete  v-model="searchContent" type="text"  :fetch-suggestions="querySearch" @select="handleSelect" placeholder="请输入内容" style="width:100%">
             <template slot="append">
               <el-button @click="getSearchOne" type="primary">搜索</el-button>
             </template>
@@ -81,7 +81,7 @@ export default {
     // read historyList
     let historyList = Cookie.get('HISTORY_LIST')
     if (historyList) this.historyList = JSON.parse(historyList)
-
+    this.bindEnterKey()
     this.bindMessage()
   },
   methods: {
@@ -124,12 +124,33 @@ export default {
       this.historyList.push({'value': this.searchContent})
       Cookie.set('HISTORY_LIST', JSON.stringify(this.historyList), {expires: 7})
     },
+    bindEnterKey () {
+      let self = this
+      document.onkeydown = function (event) {
+        var e = event || window.event
+        if (e && e.keyCode === 13) { // 回车
+          if (!self.tableLoading) {
+            if (self.searchContent !== '' && self.searchContent !== undefined) {
+              console.log(self.searchContent)
+              self.getSearchOne()
+            } else {
+              self.$message.error('输入内容不能为空!')
+            }
+          }
+        }
+      }
+    },
     bindMessage () {
       // listen GET_SEARCH_LIST
-      ipcRenderer.on(GET_SEARCH_LIST, (event, args) => {
-        let data = args
-        this.searchData = data
-        this.tableLoading = false
+      ipcRenderer.on(GET_SEARCH_LIST, (event, resp) => {
+        if (resp.code === 200) {
+          this.searchData = resp.data
+          this.tableLoading = false
+        } else if (resp.code === 500) {
+          this.searchData = []
+          this.tableLoading = false
+          this.$message.error('错误：' + resp.data + '请尝试使用代理!')
+        }
       })
 
       // listen GET_SEARCH_DETAIL

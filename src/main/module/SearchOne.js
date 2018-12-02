@@ -15,7 +15,10 @@ export default () => {
   ipcMain.on(GET_SEARCH_LIST, (event, agrs) => {
     addQueue(encodeURI(baseUrl + agrs), ($) => {
       let data = getSearchList($)
-      event.sender.send(GET_SEARCH_LIST, data)
+      event.sender.send(GET_SEARCH_LIST, {code: 200, data})
+    }, (err) => {
+      console.log(err.code)
+      event.sender.send(GET_SEARCH_LIST, {code: 500, data: err.toString})
     })
   })
 
