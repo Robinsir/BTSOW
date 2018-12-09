@@ -6,10 +6,12 @@ import {
 } from './Crawler'
 import {
   GET_SEARCH_LIST,
-  GET_SEARCH_DETAIL
+  GET_SEARCH_DETAIL,
+  SET_SEARCH_ADDR
 } from '@/message'
 import jq from 'cheerio'
-const baseUrl = 'https://btsow.pw/search/'
+// let baseUrl = 'https://btsow.pw/search/'
+let baseUrl = ''
 export default () => {
   // get list ...
   ipcMain.on(GET_SEARCH_LIST, (event, agrs) => {
@@ -30,6 +32,22 @@ export default () => {
       console.log('TCL: data', data)
       event.sender.send(GET_SEARCH_DETAIL, data)
     })
+  })
+
+  // set baseUrl ...
+  ipcMain.on(SET_SEARCH_ADDR, (event, agrs) => {
+    console.log('setSearchAddr...', agrs.method)
+
+    switch (agrs.method) {
+      case 'SET':
+        baseUrl = agrs.data
+        event.sender.send(SET_SEARCH_ADDR, baseUrl)
+        // localStorage.setItem('SEARCH_ADDR', baseUrl)
+        break
+      case 'GET':
+        event.sender.send(SET_SEARCH_ADDR, baseUrl)
+        break
+    }
   })
 }
 function getSearchDetail ($) {
