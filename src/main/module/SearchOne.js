@@ -9,7 +9,7 @@ import {
   GET_SEARCH_DETAIL
 } from '@/message'
 import jq from 'cheerio'
-const baseUrl = 'https://btso.pw/search/'
+const baseUrl = 'https://btsow.pw/search/'
 export default () => {
   // get list ...
   ipcMain.on(GET_SEARCH_LIST, (event, agrs) => {
