@@ -7,7 +7,8 @@ export default () => {
   ipcMain.on(LOGIN_BAIDUYUN, (event, {usrName, passWord} = {}) => {
     console.log(usrName)
     console.log(passWord)
-    let pcs = new PCS['default'](PCS.create_username_password_jar_creator(usrName, passWord,
+
+    let pcs = new PCS['default'](PCS.create_username_password_jar_creator(usrName, passWord, // eslint-disable-line new-cap
       url => {
         event.sender.send(LOGIN_BAIDUYUN, url)
       }))
